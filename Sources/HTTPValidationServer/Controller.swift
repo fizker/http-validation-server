@@ -3,6 +3,10 @@ import Hummingbird
 actor Controller {
 	var data: [String: String] = [:]
 
+	init(pairs: [KeyValuePair] = []) {
+		data = Dictionary(uniqueKeysWithValues: pairs.map { ($0.key, $0.value) })
+	}
+
 	nonisolated func setup(router: Router<AppRequestContext>) {
 		router.get("/") { _, _ in
 			return HTML(html: """
@@ -49,10 +53,5 @@ actor Controller {
 
 	func add(_ pair: KeyValuePair) {
 		data[pair.key] = pair.value
-	}
-
-	struct KeyValuePair: Codable {
-		var value: String
-		var key: String
 	}
 }

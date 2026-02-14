@@ -9,8 +9,14 @@ struct AppCommand: AsyncParsableCommand {
 	@Option(name: .shortAndLong)
 	var port: Int
 
+	@Argument(
+		help: "Validation pairs. These can also be given after launch. Format: <URL token>=<response body>",
+		transform: KeyValuePair.init(argument:),
+	)
+	var pairs: [KeyValuePair] = []
+
 	func run() async throws {
-		let app = try await buildApplication(port: port)
+		let app = try await buildApplication(port: port, pairs: pairs)
 		try await app.runService()
 	}
 }

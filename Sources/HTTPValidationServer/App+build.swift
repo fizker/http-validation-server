@@ -7,11 +7,11 @@ typealias AppRequestContext = HTMLFormRequestContext
 
 ///  Build application
 /// - Parameter port: The port to run against
-func buildApplication(port: Int) async throws -> some ApplicationProtocol {
+func buildApplication(port: Int, pairs: [KeyValuePair]) async throws -> some ApplicationProtocol {
 	let logger = Logger(label: "HTTPValidationServer") ~ {
 		$0.logLevel = .info
 	}
-	let router = try buildRouter()
+	let router = try buildRouter(pairs: pairs)
 	let app = Application(
 		router: router,
 		configuration: .init(address: .hostname(port: port)),
@@ -21,7 +21,7 @@ func buildApplication(port: Int) async throws -> some ApplicationProtocol {
 }
 
 /// Build router
-func buildRouter() throws -> Router<AppRequestContext> {
+func buildRouter(pairs: [KeyValuePair]) throws -> Router<AppRequestContext> {
 	let router = Router(context: AppRequestContext.self)
 	// Add middleware
 	router.addMiddleware {
@@ -29,7 +29,7 @@ func buildRouter() throws -> Router<AppRequestContext> {
 		LogRequestsMiddleware(.info)
 	}
 
-	let controller = Controller()
+	let controller = Controller(pairs: pairs)
 	controller.setup(router: router)
 	return router
 }
