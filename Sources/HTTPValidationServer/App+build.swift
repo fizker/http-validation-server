@@ -14,7 +14,7 @@ func buildApplication(port: Int, pairs: [KeyValuePair]) async throws -> some App
 	let router = try buildRouter(pairs: pairs)
 	let app = Application(
 		router: router,
-		configuration: .init(address: .hostname(port: port)),
+		configuration: .init(address: .hostname("0.0.0.0", port: port)),
 		logger: logger,
 	)
 	return app
